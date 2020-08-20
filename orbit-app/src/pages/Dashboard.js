@@ -36,7 +36,7 @@ const Dashboard = () => {
 
   return (
     <>
-      <PageTitle title="Dashboard" />
+      <PageTitle title="Dashboard2" />
       {dashboardData ? (
         <>
           <div className="mb-4 flex flex-col sm:flex-row">
