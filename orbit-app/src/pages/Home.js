@@ -1,10 +1,24 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import GradientLink from '../components/common/GradientLink'
 import GradientBar from './../components/common/GradientBar'
 import logo from './../images/logo.png'
+import { AuthContext } from './../context/AuthContext'
+// import { Redirect } from 'react-router-dom'
 
 const Home = () => {
+  const authContext = useContext(AuthContext)
+  const [isAuthenticated, setIsAuthenticated] = useState()
+
+  useEffect(() => {
+    console.log(authContext)
+    setIsAuthenticated(authContext.isAuthenticated())
+  }, [])
+
+  useEffect(() => {
+    console.log(isAuthenticated)
+  }, [isAuthenticated])
+
   return (
     <>
       <GradientBar />
@@ -21,7 +35,10 @@ const Home = () => {
             <Link to='/signup' className='text-blue-700 mr-6'>
               Sign Up
             </Link>
-            <GradientLink to={'/login'} text='Log In' />
+            <GradientLink
+              to={isAuthenticated ? '/dashboard' : '/login'}
+              text='Log In'
+            />
           </div>
         </div>
       </div>
@@ -45,7 +62,11 @@ const Home = () => {
             </h2>
 
             <div className='mt-4 sm:mt-10 w-48'>
-              <GradientLink text='Get Started' size='lg' to={'/dashboard'} />
+              <GradientLink
+                text='Get Started'
+                size='lg'
+                to={isAuthenticated ? '/dashboard' : '/signup'}
+              />
             </div>
           </div>
         </div>

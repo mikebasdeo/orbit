@@ -37,6 +37,7 @@ const DropdownContent = ({ dropdownItems }) => {
 };
 
 const AvatarDropdown = () => {
+  //?
   const node = useRef();
   const auth = useContext(AuthContext);
   const { authState } = auth;
@@ -74,13 +75,13 @@ const AvatarDropdown = () => {
         className="flex rounded-full items-center py-2 px-3 bg-gradient focus:outline-none shadow-lg"
         onClick={() => setDropdownOpen(!dropdownOpen)}
       >
-        {/* <img
+        <img
           src={authState.userInfo.avatar || defaultAvatar}
           className="rounded-full w-6 border-2 border-white"
           alt="Avatar"
-        /> */}
+        />
         <div className="px-3">
-          <p className="text-white">Ryan</p>
+  <p className="text-white">{authState.userInfo.firstName}</p>
         </div>
         <div className="mr-1 text-white">
           <FontAwesomeIcon icon={faCaretDown} />
