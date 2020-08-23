@@ -1,7 +1,6 @@
 import React, { createContext, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 
-
 const AuthContext = createContext()
 const { Provider } = AuthContext
 
@@ -48,6 +47,9 @@ const AuthProvider = ({ children }) => {
     setAuthState({ token, userInfo, expiresAt })
   }
 
+  const isAdmin = () => {
+    return authState.userInfo.role === 'Admin'
+  }
   return (
     <Provider
       value={{
@@ -55,6 +57,7 @@ const AuthProvider = ({ children }) => {
         setAuthState: (authInfo) => setAuthInfo(authInfo),
         isAuthenticated,
         logout,
+        isAdmin,
       }}
     >
       {children}
