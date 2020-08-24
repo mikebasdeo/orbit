@@ -48,7 +48,7 @@ const AuthProvider = ({ children }) => {
   }
 
   const isAdmin = () => {
-    return authState.userInfo.role === 'Admin'
+    return authState.userInfo.role === 'admin'
   }
   return (
     <Provider
