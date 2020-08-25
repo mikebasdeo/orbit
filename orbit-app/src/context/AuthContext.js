@@ -5,6 +5,8 @@ const AuthContext = createContext()
 const { Provider } = AuthContext
 
 const AuthProvider = ({ children }) => {
+
+  // keeps track of where the user has been
   const history = useHistory()
   // check local browser storage first
   const token = localStorage.getItem('token')

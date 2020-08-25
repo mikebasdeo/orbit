@@ -18,6 +18,10 @@ app.use(cors())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
+// ----------------------------------------------------------------
+
+// 1st Tier Endpoints
+
 app.post('/api/authenticate', async (req, res) => {
   try {
     const { email, password } = req.body
@@ -117,27 +121,53 @@ app.post('/api/signup', async (req, res) => {
   }
 })
 
-// basic helloworld middleware
-app.use((req, res, next) => {
-  console.log(req.headers)
-  next()
-})
+// ----------------------------------------------------------------
 
-// jwt middleware!
+//MIDDLEWARE
+
+// add req.user info to all requests below here
+const attachUser = (req, res, next) => {
+  const token = req.headers.authorization
+  if (!token) {
+    return res.status(401).json({ message: 'Unauthorized.' })
+  }
+  const decodedToken = jwtDecode(token.slice(7))
+
+  if (!decodedToken) {
+    return res.status(401).json({ message: 'Unathorized 2' })
+  } else {
+    req.user = decodedToken
+    next()
+  }
+}
+app.use(attachUser)
+
 const checkJwt = jwt({
   secret: process.env.JWT_SECRET,
   issuer: 'api.orbit',
   audience: 'api.orbit',
 })
 
-app.get('/api/dashboard-data', checkJwt, (req, res) =>
-  // add jwt middleware using token inside req.head?
-  res.json(dashboardData)
-)
+const requireAdmin = (req, res, next) => {
+  const { role } = req.user
+  if (role !== 'admin') {
+    return res.status(401).json({ message: 'not admin' })
+  }
+  next()
+}
+
+// ----------------------------------------------------------------
+
+app.get('/api/dashboard-data', checkJwt, (req, res) => {
+  console.log(req.user)
+  return res.json(dashboardData)
+})
 
 app.patch('/api/user-role', async (req, res) => {
   try {
     const { role } = req.body
+    console.log(req.body)
+    console.log(req.user)
     const allowedRoles = ['user', 'admin']
 
     if (!allowedRoles.includes(role)) {
@@ -153,18 +183,26 @@ app.patch('/api/user-role', async (req, res) => {
   }
 })
 
-app.get('/api/inventory', async (req, res) => {
+app.get('/api/inventory', checkJwt, requireAdmin, async (req, res) => {
   try {
-    const inventoryItems = await InventoryItem.find()
+    // add objectId to request
+    const { sub } = req.user
+
+    const inventoryItems = await InventoryItem.find({ user: sub })
     res.json(inventoryItems)
   } catch (err) {
     return res.status(400).json({ error: err })
   }
 })
 
-app.post('/api/inventory', async (req, res) => {
+app.post('/api/inventory', checkJwt, requireAdmin, async (req, res) => {
   try {
-    const inventoryItem = new InventoryItem(req.body)
+    // todo add user ID here to mongo object creation
+    const { sub } = req.user
+
+    const toSend = Object.assign({}, req.body, { user: sub })
+
+    const inventoryItem = new InventoryItem(toSend)
     await inventoryItem.save()
     res.status(201).json({
       message: 'Inventory item created!',
@@ -178,10 +216,12 @@ app.post('/api/inventory', async (req, res) => {
   }
 })
 
-app.delete('/api/inventory/:id', async (req, res) => {
+app.delete('/api/inventory/:id', checkJwt, requireAdmin, async (req, res) => {
   try {
+    const { sub } = req.user
     const deletedItem = await InventoryItem.findOneAndDelete({
       _id: req.params.id,
+      user: sub,
     })
     res.status(201).json({
       message: 'Inventory item deleted!',
