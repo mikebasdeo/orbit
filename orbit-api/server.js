@@ -199,7 +199,7 @@ app.post('/api/inventory', checkJwt, requireAdmin, async (req, res) => {
   try {
     // todo add user ID here to mongo object creation
     const { sub } = req.user
-
+    console.log(req.body)
     const toSend = Object.assign({}, req.body, { user: sub })
 
     const inventoryItem = new InventoryItem(toSend)

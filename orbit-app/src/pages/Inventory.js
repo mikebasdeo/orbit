@@ -14,7 +14,10 @@ const InventoryItemContainer = ({ children }) => (
 const InventoryItem = ({ item, onDelete }) => {
   return (
     <div className='flex'>
+      {/* 1 */}
       <img className='rounded w-32 h-full' src={item.image} alt='inventory' />
+
+      {/* 2 */}
       <div className='flex justify-between w-full'>
         <div className='flex flex-col ml-4 justify-between'>
           <div>
@@ -27,6 +30,7 @@ const InventoryItem = ({ item, onDelete }) => {
             </p>
           </div>
         </div>
+
         <div className='self-end'>
           <DangerButton text='Delete' onClick={() => onDelete(item)} />
         </div>
@@ -37,10 +41,13 @@ const InventoryItem = ({ item, onDelete }) => {
 
 const NewInventoryItem = ({ onSubmit }) => {
   return (
-    <section className='bg-white p-4 shadow-md rounded-md'>
-      <p className='font-bold mb-2'>New Inventory Item</p>
-      <InventoryItemForm onSubmit={onSubmit} />
-    </section>
+    <>
+      <section className='bg-white p-4 shadow-md rounded-md'>
+        <p className='font-bold mb-2'>New Inventory Item</p>
+        <InventoryItemForm onSubmit={onSubmit} />
+      </section>
+      {/* <p className='bg-white p-4 shadow-md rounded-md mt-5'>Hello</p> */}
+    </>
   )
 }
 
@@ -104,7 +111,7 @@ const Inventory = () => {
       {inventory && inventory.length
         ? inventory.map((item) => (
             <InventoryItemContainer key={item._id}>
-              <InventoryItem item={item} onDelete={onDelete} />
+              <InventoryItem item={item} onDelete={onDelete} key={item._id}/>
             </InventoryItemContainer>
           ))
         : 'No Inventory Items'}

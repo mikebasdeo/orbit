@@ -81,7 +81,7 @@ const Sidebar = () => {
           <>
             {navItem.allowedRoles.includes(role) && (
               <NavItemContainer key={i}>
-                <NavItem navItem={navItem} />
+                <NavItem navItem={navItem} key={i} />
               </NavItemContainer>
             )}
           </>
