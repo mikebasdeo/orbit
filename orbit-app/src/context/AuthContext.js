@@ -5,11 +5,10 @@ const AuthContext = createContext()
 const { Provider } = AuthContext
 
 const AuthProvider = ({ children }) => {
-
   // keeps track of where the user has been
   const history = useHistory()
   // check local browser storage first
-  const token = localStorage.getItem('token')
+  const token = null
   const userInfo = localStorage.getItem('userInfo')
   const expiresAt = localStorage.getItem('expiresAt')
 
@@ -23,7 +22,7 @@ const AuthProvider = ({ children }) => {
 
   const logout = () => {
     // clear local storage and
-    localStorage.removeItem('token')
+    // localStorage.removeItem('token')
     localStorage.removeItem('userInfo')
     localStorage.removeItem('expiresAt')
 
@@ -42,7 +41,7 @@ const AuthProvider = ({ children }) => {
   // function to handle successful login
   const setAuthInfo = ({ token, userInfo, expiresAt }) => {
     //persist local storage in browser
-    localStorage.setItem('token', token)
+    // localStorage.setItem('token', token)
     localStorage.setItem('userInfo', JSON.stringify(userInfo))
     localStorage.setItem('expiresAt', expiresAt)
 
